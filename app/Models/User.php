@@ -3,10 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Enums\UserProfileVisibilityEnum;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -26,11 +29,16 @@ class User extends Authenticatable
         'email',
         'password',
         'first_name',
-        'last_name'
+        'last_name',
+        'status'
     ];
 
     protected $hidden = [
         'password'
+    ];
+
+    protected $casts = [
+        'status' => UserProfileVisibilityEnum::class
     ];
 
     public function albumCaches(): HasMany
@@ -66,5 +74,9 @@ class User extends Authenticatable
     public function userStyluses(): HasMany
     {
         return $this->hasMany(UserStylus::class);
+    }
+
+    public function friends(): HasMany {
+        return $this->hasMany(UserFriend::class);
     }
 }
