@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * User Stylus.
+ * User Friend.
  *
  * @property bigInteger $id
  * @property bigInteger $user_id
  * @property bigInteger $friend_id
  */
-class UserStylus extends Model
+class UserFriend extends Model
 {
     use HasFactory;
 
