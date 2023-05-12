@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\UserPlaySessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,6 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('user-profile', [AuthController::class, 'userProfile']);
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::prefix('user')->group(function () {
@@ -35,6 +35,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('search-users', [UserController::class, 'searchUsers']);
         Route::post('change-password', [UserController::class, 'changePassword']);
         Route::post('change-profile-visibility', [UserController::class, 'changeProfileVisibility']);
+    });
+
+    Route::prefix('user-play-session')->group(function() {
+        Route::post('create', [UserPlaySessionController::class, 'create']);
+        Route::delete('delete', [UserPlaySessionController::class, 'delete']);
     });
 });
 

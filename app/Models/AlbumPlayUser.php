@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property bigInteger $id
  * @property bigInteger $user_id
  * @property bigInteger $album_cache_id
- * @property bigInteger $user_style_id
+ * @property bigInteger $user_stylus_id
  */
 class AlbumPlayUser extends Model
 {
@@ -25,7 +25,7 @@ class AlbumPlayUser extends Model
     protected $fillable = [
         'user_id',
         'album_cache_id',
-        'user_style_id',
+        'user_stylus_id',
     ];
 
     public function user(): BelongsTo
