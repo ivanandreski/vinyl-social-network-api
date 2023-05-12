@@ -9,13 +9,16 @@ use App\Factory\AlbumFactory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\AddFriendRequest;
 use App\Http\Requests\SearchUsersRequest;
 use App\Http\Requests\RemoveFriendRequest;
 use App\Http\Requests\GetCollectionRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\SyncCollectionRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Enums\UserProfileVisibilityEnum;
+use App\Http\Requests\ChangeProfileVisibilityRequest;
 use App\Repository\Interface\AlbumCacheRepositoryInterface;
 
 class UserController extends Controller
@@ -106,5 +109,23 @@ class UserController extends Controller
             ->orWhere(DB::raw("concat(first_name, ' ', last_name)"), 'like', '%' . $request->name . '%')
             ->limit(10)
             ->get();
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response(['message' => 'Password changed successfully'], Response::HTTP_OK);
+    }
+
+    public function changeProfileVisibility(ChangeProfileVisibilityRequest $request)
+    {
+        $user = Auth::user();
+        $user->visibility = $request->visibility_type;
+        $user->save();
+
+        return response(['message' => 'Visibility changed to ' . $request->visibility_type], Response::HTTP_OK);
     }
 }
