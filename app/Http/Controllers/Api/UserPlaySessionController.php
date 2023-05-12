@@ -26,7 +26,7 @@ class UserPlaySessionController extends Controller
         $userPlaySession = new AlbumPlayUser();
     }
 
-    public function delete(DeleteUserPlaySessionRequest $request)
+    public function delete()
     {
     }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserPlaySessionController;
+use App\Http\Controllers\Api\UserStylusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('create', [UserPlaySessionController::class, 'create']);
         Route::delete('delete', [UserPlaySessionController::class, 'delete']);
     });
+
+        Route::prefix('user-stylus')->group(function() {
+            Route::get('get-user-styluses', [UserStylusController::class, 'getUserStyluses']);
+            Route::post('create', [UserStylusController::class, 'create']);
+            Route::put('retire', [UserStylusController::class, 'retire']);
+            Route::delete('delete', [UserStylusController::class, 'delete']);
+        });
 });
 
 Route::get('users', [AuthController::class, 'allUsers']);
