@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('add-friend', [UserController::class, 'addFriend']);
         Route::delete('remove-friend', [UserController::class, 'removeFriend']);
         Route::get('search-users', [UserController::class, 'searchUsers']);
+        Route::post('change-password', [UserController::class, 'changePassword']);
+        Route::post('change-profile-visibility', [UserController::class, 'changeProfileVisibility']);
     });
 });
 
