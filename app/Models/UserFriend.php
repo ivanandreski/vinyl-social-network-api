@@ -18,17 +18,21 @@ class UserFriend extends Model
 {
     use HasFactory;
 
-    protected $table = 'user_styluses';
+    protected $table = 'user_friends';
 
     protected $fillable = [
         'id',
         'user_id',
-        'stylus_name',
-        'is_retired',
+        'friend_id',
     ];
 
-    public function albumPlayUsers(): HasMany
+    public function user(): BelongsTo
     {
-        return $this->hasMany(AlbumPlayUser::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function friend(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'friend_id');
     }
 }

@@ -4,13 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Models\Enums\UserProfileVisibilityEnum;
+use App\Models\UserFriend;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Enums\UserProfileVisibilityEnum;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * User Stylus.
@@ -20,6 +21,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string $password
  * @property string $first_name
  * @property string $last_name
+ * @property UserProfileVisibilityEnum $visibility
  */
 class User extends Authenticatable
 {
@@ -30,20 +32,20 @@ class User extends Authenticatable
         'password',
         'first_name',
         'last_name',
-        'status'
+        'visibility'
     ];
 
     protected $hidden = [
-        'password'
+        'password',
     ];
 
     protected $casts = [
-        'status' => UserProfileVisibilityEnum::class
+        'visibility' => UserProfileVisibilityEnum::class
     ];
 
-    public function albumCaches(): HasMany
+    public function albumCaches(): BelongsToMany
     {
-        return $this->hasMany(AlbumCacheUser::class);
+        return $this->belongsToMany(AlbumCache::class, 'album_cache_users');
     }
 
     public function albumPlayUsers(): HasMany
@@ -77,6 +79,10 @@ class User extends Authenticatable
     }
 
     public function friends(): HasMany {
-        return $this->hasMany(UserFriend::class);
+        return $this->hasMany(UserFriend::class)->with('friend');
+    }
+
+    public function getFullName(): string {
+        return $this->first_name . ' ' . $this->last_name;
     }
 }

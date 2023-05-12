@@ -12,8 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('album_cache_users', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
             $table->bigInteger('album_cache_id')
                 ->unsigned();
             $table->bigInteger('user_id')

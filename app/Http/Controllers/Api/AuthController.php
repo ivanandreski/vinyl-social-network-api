@@ -32,7 +32,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('token')->plainTextToken;
-            $cookie = cookie('cookie_token', $token, 60 * 24);
+            $cookie = cookie('cookie_token', $token, 10 * 365 * 60 * 24);
             return response(["token" => $token], Response::HTTP_OK)->withoutCookie($cookie);
         } else {
             return response(["message" => "Invalid Credentials"], Response::HTTP_UNAUTHORIZED);

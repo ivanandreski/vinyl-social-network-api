@@ -26,7 +26,7 @@ class AlbumCacheUser extends Model
 
     public function albumCache(): BelongsTo
     {
-        return $this->belongsTo(AlbumCache::class);
+        return $this->belongsTo(AlbumCache::class, 'album_cache_id');
     }
 
     public function user(): BelongsTo
