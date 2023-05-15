@@ -31,6 +31,7 @@ class UserController extends Controller
         $this->albumCacheRepository = $albumCacheRepository;
     }
 
+    // todo: add response message and finish this
     public function syncCollection(SyncCollectionRequest $request)
     {
         $albumFactory = new AlbumFactory();
