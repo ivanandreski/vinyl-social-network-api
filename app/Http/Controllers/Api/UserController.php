@@ -31,7 +31,9 @@ class UserController extends Controller
         $this->albumCacheRepository = $albumCacheRepository;
     }
 
-    // todo: add response message and finish this
+    // todo: koga ke napravi login auto sync
+    // todo: koga ke napravi sync auto sync so ovoj akaunt
+    // todo: ne mu davaj opcija da bira
     public function syncCollection(SyncCollectionRequest $request)
     {
         $albumFactory = new AlbumFactory();
@@ -57,6 +59,8 @@ class UserController extends Controller
         $user = Auth::user();
         $user->albumCaches()->sync($userAlbumIds);
         $user->save();
+
+        return response(['message' => "Sucesfully imported " . count($userAlbumIds) . "."], Response::HTTP_CREATED);
     }
 
     public function getUserCollection(GetCollectionRequest $request)
@@ -115,6 +119,10 @@ class UserController extends Controller
     public function changePassword(ChangePasswordRequest $request)
     {
         $user = Auth::user();
+        if(!Hash::check($request->old_password, $user->password)) {
+            return response(['message' => 'Old password is incorect'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $user->password = Hash::make($request->password);
         $user->save();
 

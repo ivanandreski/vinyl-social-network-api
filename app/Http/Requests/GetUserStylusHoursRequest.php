@@ -5,12 +5,11 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Create User Play Session Request.
+ * Add Friend Request.
  *
- * @property string $discogs_id
  * @property bigInteger $stylus_id
  */
-class CreateUserPlaySessionRequest extends FormRequest
+class GetUserStylusHoursRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -20,7 +19,6 @@ class CreateUserPlaySessionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'discogs_id' => 'required|exists:albums_cache,discogs_id',
             'stylus_id' => 'required|exists:user_styluses,id'
         ];
     }

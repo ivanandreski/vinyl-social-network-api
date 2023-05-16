@@ -4,6 +4,12 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Add Friend Request.
+ *
+ * @property string old_password,
+ * @property string password
+ */
 class ChangePasswordRequest extends FormRequest
 {
     /**
@@ -14,6 +20,7 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'old_password' => 'required',
             'password' => 'required|confirmed'
         ];
     }
