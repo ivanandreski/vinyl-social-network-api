@@ -31,9 +31,9 @@ class UserController extends Controller
         $this->albumCacheRepository = $albumCacheRepository;
     }
 
+    // todo: make api call for getting the profile with token which returns basic info
+
     // todo: koga ke napravi login auto sync
-    // todo: koga ke napravi sync auto sync so ovoj akaunt
-    // todo: ne mu davaj opcija da bira
     public function syncCollection(SyncCollectionRequest $request)
     {
         $albumFactory = new AlbumFactory();
