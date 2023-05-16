@@ -39,7 +39,6 @@ class UserController extends Controller
         $albumFactory = new AlbumFactory();
 
         $userAlbumIds = [];
-
         foreach ($request->albums as $albumRequest) {
             $album = $albumFactory->createAlbumFromRequest($albumRequest);
             $albumCache = $this->albumCacheRepository->findAlbumCacheByDiscogsId($album->discogs_id);

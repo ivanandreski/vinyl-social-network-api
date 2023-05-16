@@ -14,15 +14,15 @@ class SyncCollectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'albums' => 'present|array',
-            'albums.*.discogs_id' => 'required',
-            'albums.*.discogs_resource_url' => 'required',
-            'albums.*.discogs_release_url' => 'required',
-            'albums.*.image_url' => 'required',
-            'albums.*.title' => 'required',
-            'albums.*.artist_name' => 'required',
-            'albums.*.release_year' => 'required|numeric',
-            'albums.*.length_in_seconds' => 'required|numeric',
+            // 'albums' => 'present|array',
+            // 'albums.*.discogs_id' => 'required',
+            // 'albums.*.discogs_resource_url' => 'required',
+            // 'albums.*.discogs_release_url' => 'required',
+            // 'albums.*.image_url' => 'required',
+            // 'albums.*.title' => 'required',
+            // 'albums.*.artist_name' => 'required',
+            // 'albums.*.release_year' => 'required|numeric',
+            // 'albums.*.length_in_seconds' => 'required|numeric',
         ];
     }
 }

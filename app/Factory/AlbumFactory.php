@@ -14,6 +14,7 @@ class AlbumFactory {
         $album->artist_name = $requestParams['artist_name'];
         $album->image_url = $requestParams['image_url'];
         $album->length_in_seconds = $requestParams['length_in_seconds'];
+        $album->release_year = $requestParams['release_year'];
         $album->column_hash = $album->generateColumnHash();
 
         return $album;
