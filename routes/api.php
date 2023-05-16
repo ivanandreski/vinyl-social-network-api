@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserPlaySessionController;
 use App\Http\Controllers\Api\UserStylusController;
@@ -25,6 +26,11 @@ use App\Http\Controllers\Api\UserStylusController;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
+Route::prefix('post')->group(function () {
+    Route::get('/', [PostController::class, 'index']);
+    Route::get('{id}/no-auth', [PostController::class, 'show']);
+});
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
@@ -38,18 +44,26 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('change-profile-visibility', [UserController::class, 'changeProfileVisibility']);
     });
 
-    Route::prefix('user-play-session')->group(function() {
+    Route::prefix('user-play-session')->group(function () {
         Route::post('create', [UserPlaySessionController::class, 'create']);
         Route::delete('delete', [UserPlaySessionController::class, 'delete']);
     });
 
-        Route::prefix('user-stylus')->group(function() {
-            Route::get('get-user-styluses', [UserStylusController::class, 'getUserStyluses']);
-            Route::get('get-stylus-play-time', [UserStylusController::class, 'getStylusHours']);
-            Route::post('create', [UserStylusController::class, 'create']);
-            Route::put('retire', [UserStylusController::class, 'retire']);
-            Route::delete('delete', [UserStylusController::class, 'delete']);
-        });
+    Route::prefix('user-stylus')->group(function () {
+        Route::get('get-user-styluses', [UserStylusController::class, 'getUserStyluses']);
+        Route::get('get-stylus-play-time', [UserStylusController::class, 'getStylusHours']);
+        Route::post('create', [UserStylusController::class, 'create']);
+        Route::put('retire', [UserStylusController::class, 'retire']);
+        Route::delete('delete', [UserStylusController::class, 'delete']);
+    });
+
+    Route::prefix('post')->group(function () {
+        Route::get('{id}', [PostController::class, 'show']);
+        Route::post('/create', [PostController::class, 'create']);
+        Route::post('/{post}/like', [PostController::class, 'toggleLike']);
+        Route::put('/{post}/edit', [PostController::class, 'edit']);
+        Route::delete('/{post}/delete', [PostController::class, 'delete']);
+    });
 });
 
 Route::get('users', [AuthController::class, 'allUsers']);

@@ -171,6 +171,7 @@ return [
 
         // Repository Providers
         App\Providers\AlbumCacheRepositoryProvider::class,
+        App\Providers\PostRepositoryProvider::class,
     ])->toArray(),
 
     /*
