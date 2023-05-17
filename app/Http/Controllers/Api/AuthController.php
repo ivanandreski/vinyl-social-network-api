@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Factory\UserFactory;
 use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use App\Http\Requests\StoreUserRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
-    public function register(StoreUserRequest $request)
+    public function register(RegisterRequest $request)
     {
         $userFactory = new UserFactory();
         $user = $userFactory->createUserFromRequest($request->all());
@@ -22,15 +23,9 @@ class AuthController extends Controller
         return response($user, Response::HTTP_CREATED);
     }
 
-    // TODO: make custom request and validate if email exists in db
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
-        ]);
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($request->all())) {
             $user = Auth::user();
             $token = $user->createToken('token')->plainTextToken;
             $cookie = cookie('cookie_token', $token, 10 * 365 * 60 * 24);
@@ -38,14 +33,6 @@ class AuthController extends Controller
         } else {
             return response(["message" => "Invalid Credentials"], Response::HTTP_UNAUTHORIZED);
         }
-    }
-
-    public function userProfile(Request $request)
-    {
-        return response()->json([
-            "message" => "userProfile OK",
-            "userData" => auth()->user()
-        ], Response::HTTP_OK);
     }
 
     public function logout()

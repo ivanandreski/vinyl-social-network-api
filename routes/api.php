@@ -35,6 +35,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::prefix('user')->group(function () {
+        Route::get('my-profile', [UserController::class, 'getMyProfile']);
+        Route::get('{user}', [UserController::class, 'getProfile']);
         Route::post('sync-collection', [UserController::class, 'syncCollection']);
         Route::get('get-collection', [UserController::class, 'getUserCollection']);
         Route::post('add-friend', [UserController::class, 'addFriend']);

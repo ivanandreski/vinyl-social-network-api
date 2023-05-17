@@ -31,9 +31,20 @@ class UserController extends Controller
         $this->albumCacheRepository = $albumCacheRepository;
     }
 
-    // TODO: make api call for getting the profile with token which returns basic info
+    public function getMyProfile(): User {
+        return Auth::user();
+    }
 
-    // TODO: koga ke napravi login auto sync
+    public function getProfile(User $user) {
+        $requestUser = Auth::user();
+        if($user->visibility == UserProfileVisibilityEnum::PRIVATE &&  $user->id != $requestUser->id) {
+            return response(['message' => 'This profile is private'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // TODO: add more joins ex. friends
+        return response(['user' => $requestUser], Response::HTTP_OK);
+    }
+
     public function syncCollection(SyncCollectionRequest $request)
     {
         $albumFactory = new AlbumFactory();
