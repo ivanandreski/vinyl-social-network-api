@@ -22,7 +22,7 @@ class AuthController extends Controller
         return response($user, Response::HTTP_CREATED);
     }
 
-    // todo: make custom request and validate if email exists in db
+    // TODO: make custom request and validate if email exists in db
     public function login(Request $request)
     {
         $credentials = $request->validate([

@@ -31,9 +31,9 @@ class UserController extends Controller
         $this->albumCacheRepository = $albumCacheRepository;
     }
 
-    // todo: make api call for getting the profile with token which returns basic info
+    // TODO: make api call for getting the profile with token which returns basic info
 
-    // todo: koga ke napravi login auto sync
+    // TODO: koga ke napravi login auto sync
     public function syncCollection(SyncCollectionRequest $request)
     {
         $albumFactory = new AlbumFactory();
@@ -118,7 +118,7 @@ class UserController extends Controller
     public function changePassword(ChangePasswordRequest $request)
     {
         $user = Auth::user();
-        if(!Hash::check($request->old_password, $user->password)) {
+        if (!Hash::check($request->old_password, $user->password)) {
             return response(['message' => 'Old password is incorect'], Response::HTTP_UNAUTHORIZED);
         }
 
