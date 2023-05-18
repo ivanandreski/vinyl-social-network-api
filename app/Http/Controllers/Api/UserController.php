@@ -139,12 +139,16 @@ class UserController extends Controller
         return response(['message' => 'Password changed successfully'], Response::HTTP_OK);
     }
 
-    public function changeProfileVisibility(ChangeProfileVisibilityRequest $request)
+    public function changeProfileVisibility(ChangeProfileVisibilityRequest $request): User
     {
         $user = Auth::user();
         $user->visibility = $request->visibility_type;
         $user->save();
 
-        return response(['message' => 'Visibility changed to ' . $request->visibility_type], Response::HTTP_OK);
+        return $user;
     }
+
+    // TODO: change email
+
+    // TODO: delete my account
 }
