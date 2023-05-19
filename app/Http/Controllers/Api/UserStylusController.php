@@ -20,11 +20,19 @@ class UserStylusController extends Controller
 {
     public function getUserStyluses(GetUserStylusesRequest $request)
     {
-        return Auth::user()
+        $styluses = Auth::user()
             ->userStyluses()
             ->when($request->retired != null, function ($query) use ($request) {
                 $query->where('is_retired', $request->retired);
             })->get();
+
+        foreach($styluses as $stylus) {
+            $stylus->play_time = AlbumPlayUser::leftJoin('albums_cache', 'album_play_user.album_cache_id', '=', 'albums_cache.id')
+            ->where('album_play_user.user_stylus_id', $request->stylus_id)
+            ->sum(DB::raw('CASE WHEN albums_cache.length_in_seconds = 0 THEN 2400 ELSE albums_cache.length_in_seconds END'));
+        }
+
+        return $styluses;
     }
 
     public function getStylusHours(GetUserStylusHoursRequest $request)
@@ -45,14 +53,14 @@ class UserStylusController extends Controller
         return response(['message' => 'Stylus create successfully'], Response::HTTP_CREATED);
     }
 
-    public function retire(UserStylus $stylus)
+    public function toggleRetire(UserStylus $stylus)
     {
         $user = Auth::user();
         if ($user->id !== $stylus->user_id) {
             return response(['message' => "You do not own this stylus"], Response::HTTP_UNAUTHORIZED);
         }
 
-        $stylus->is_retired = true;
+        $stylus->is_retired = !$stylus->is_retired;
         $stylus->save();
 
         return response(['message' => 'Stylus retired successfully'], Response::HTTP_OK);
@@ -61,7 +69,7 @@ class UserStylusController extends Controller
     public function delete(UserStylus $stylus)
     {
         $user = Auth::user();
-        if ($user->id != $stylus->id) {
+        if ($user->id != $stylus->user_id) {
             return response(['message' => "You do not own this stylus"], Response::HTTP_UNAUTHORIZED);
         }
 
