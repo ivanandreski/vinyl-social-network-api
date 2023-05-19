@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RetireStylusRequest extends FormRequest
+class ChangeEmailRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,8 @@ class RetireStylusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'stylus_id' => 'required|exists:user_styluses,id'
+            'old_email' => 'required|email',
+            'new_email' => 'required|email',
         ];
     }
 }

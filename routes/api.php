@@ -55,8 +55,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('get-user-styluses', [UserStylusController::class, 'getUserStyluses']);
         Route::get('get-stylus-play-time', [UserStylusController::class, 'getStylusHours']);
         Route::post('create', [UserStylusController::class, 'create']);
-        Route::put('retire', [UserStylusController::class, 'retire']);
-        Route::delete('delete', [UserStylusController::class, 'delete']);
+        Route::put('{stylus}/retire', [UserStylusController::class, 'retire']);
+        Route::delete('{stylus}/delete', [UserStylusController::class, 'delete']);
     });
 
     Route::prefix('post')->group(function () {

@@ -45,10 +45,9 @@ class UserStylusController extends Controller
         return response(['message' => 'Stylus create successfully'], Response::HTTP_CREATED);
     }
 
-    public function retire(RetireStylusRequest $request)
+    public function retire(UserStylus $stylus)
     {
         $user = Auth::user();
-        $stylus = UserStylus::find($request->stylus_id);
         if ($user->id !== $stylus->user_id) {
             return response(['message' => "You do not own this stylus"], Response::HTTP_UNAUTHORIZED);
         }
@@ -59,10 +58,9 @@ class UserStylusController extends Controller
         return response(['message' => 'Stylus retired successfully'], Response::HTTP_OK);
     }
 
-    public function delete(DeleteStylusRequest $request)
+    public function delete(UserStylus $stylus)
     {
         $user = Auth::user();
-        $stylus = UserStylus::find($request->stylus_id);
         if ($user->id != $stylus->id) {
             return response(['message' => "You do not own this stylus"], Response::HTTP_UNAUTHORIZED);
         }

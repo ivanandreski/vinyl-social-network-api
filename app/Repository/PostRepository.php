@@ -11,7 +11,7 @@ use App\Repository\Interface\PostRepositoryInterface;
 
 class PostRepository implements PostRepositoryInterface
 {
-    // TODO: add filter for friends only
+    // TODO: add filter for friends only FOR NOW FRIENDS IDEA IS SCRAPED
     public function findAll(GetPostsRequest $request)
     {
         $user = Auth::user();

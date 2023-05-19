@@ -11,11 +11,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\AddFriendRequest;
+use App\Http\Requests\ChangeEmailRequest;
 use App\Http\Requests\SearchUsersRequest;
 use App\Http\Requests\RemoveFriendRequest;
 use App\Http\Requests\GetCollectionRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\SyncCollectionRequest;
+use App\Http\Requests\DeleteMyAccountRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Enums\UserProfileVisibilityEnum;
 use App\Http\Requests\ChangeProfileVisibilityRequest;
@@ -41,7 +43,6 @@ class UserController extends Controller
             return response(['message' => 'This profile is private'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // TODO: add more joins ex. friends
         return response(['user' => $requestUser], Response::HTTP_OK);
     }
 
@@ -148,7 +149,28 @@ class UserController extends Controller
         return $user;
     }
 
-    // TODO: change email
+    public function changeEmail(ChangeEmailRequest $request): User
+    {
+        $user = Auth::user();
+        if($user->email != $request->old_email) {
+            return response(['message' => 'This email is wrong'], Response::HTTP_UNAUTHORIZED);
+        }
 
-    // TODO: delete my account
+        $user->email = $request->new_email;
+        $user->save();
+
+        return $user;
+    }
+
+    public function deleteMyAccount(DeleteMyAccountRequest $request)
+    {
+        $user = Auth::user();
+        if (!Hash::check($request->password, $user->password)) {
+            return response(['message' => 'Old password is incorect'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $user->delete();
+
+        return response(['message' => 'User deleted'], Response::HTTP_OK);
+    }
 }

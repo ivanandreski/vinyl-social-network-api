@@ -4,16 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteStylusRequest extends FormRequest
+class DeleteMyAccountRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +14,7 @@ class DeleteStylusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'stylus_id' => 'required|exists:user_styluses,stylus_name'
+            'password' => 'required|confirmed'
         ];
     }
 }
