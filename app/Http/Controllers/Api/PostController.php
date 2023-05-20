@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GetPostsRequest;
 use App\Http\Requests\CreatePostRequest;
+use Illuminate\Http\Request;
 use App\Models\PostLike;
 use App\Repository\Interface\AlbumCacheRepositoryInterface;
 use App\Repository\Interface\PostRepositoryInterface;
@@ -72,9 +73,13 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id): Post
+    public function show($id, Request $request): Post
     {
-        $user = Auth::user();
+        // TODO: put this in a helper method
+        $token = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken());
+
+        // Get the assigned user
+        $user = $token?->tokenable;
 
         return Post::select('posts.*')
             ->selectRaw('COUNT(post_likes.post_id) AS likes')

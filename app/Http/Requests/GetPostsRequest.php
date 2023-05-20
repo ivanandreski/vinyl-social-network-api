@@ -15,7 +15,7 @@ class GetPostsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => 'required|min:1',
+            'page' => 'required|numeric|min:1',
             'sort' => 'string|in:' . implode(',', SortTypeEnum::getAllSortTypes()),
         ];
     }

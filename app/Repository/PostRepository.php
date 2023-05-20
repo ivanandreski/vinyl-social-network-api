@@ -14,7 +14,12 @@ class PostRepository implements PostRepositoryInterface
     // TODO: add filter for friends only FOR NOW FRIENDS IDEA IS SCRAPED
     public function findAll(GetPostsRequest $request)
     {
-        $user = Auth::user();
+
+        // TODO: put this in a helper method
+        $token = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken());
+
+        // Get the assigned user
+        $user = $token?->tokenable;
 
         $sort = 'created_at';
         $direction = 'desc';
@@ -31,10 +36,12 @@ class PostRepository implements PostRepositoryInterface
             ->selectRaw('COUNT(post_likes.post_id) AS likes')
             ->selectRaw('MAX(CASE WHEN post_likes.user_id = ? THEN 1 ELSE 0 END) AS you_liked', [$user?->id ?? -1])
             ->leftJoin('post_likes', 'posts.id', '=', 'post_likes.post_id')
-            ->leftJoin('users', 'user.id', '=', 'posts.user_id')
+            ->leftJoin('users', 'users.id', '=', 'posts.user_id')
             ->where('users.visibility', '!=', UserProfileVisibilityEnum::PRIVATE)
+            ->with('user')
+            ->with('albumCache')
             ->groupBy('posts.id')
             ->orderByDesc($sort, $direction)
-            ->paginate(perPage: 10, page: $request->page);
+            ->paginate(perPage: 100, page: $request->page);
     }
 }

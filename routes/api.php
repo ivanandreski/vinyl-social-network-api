@@ -27,8 +27,8 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
 Route::prefix('post')->group(function () {
-    Route::get('/', [PostController::class, 'index']);
-    Route::get('{id}/no-auth', [PostController::class, 'show']);
+    Route::get('', [PostController::class, 'index']);
+    Route::get('{id}', [PostController::class, 'show']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -60,7 +60,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::prefix('post')->group(function () {
-        Route::get('{id}', [PostController::class, 'show']);
+        // Route::get('{id}', [PostController::class, 'show']);
         Route::post('/create', [PostController::class, 'create']);
         Route::post('/{post}/like', [PostController::class, 'toggleLike']);
         Route::put('/{post}/edit', [PostController::class, 'edit']);
