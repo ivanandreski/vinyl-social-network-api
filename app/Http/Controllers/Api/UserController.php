@@ -37,13 +37,15 @@ class UserController extends Controller
         return Auth::user();
     }
 
-    public function getProfile(User $user) {
-        $requestUser = Auth::user();
-        if($user->visibility == UserProfileVisibilityEnum::PRIVATE &&  $user->id != $requestUser->id) {
-            return response(['message' => 'This profile is private'], Response::HTTP_UNAUTHORIZED);
-        }
+    public function getProfile(User $user, Request $request) {
+        // TODO: put this in a helper method
+        $token = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken());
 
-        return response(['user' => $requestUser], Response::HTTP_OK);
+        // Get the assigned user
+        $requestUser = $token?->tokenable;
+        // todo: maybe make some checks for private
+
+        return $user;
     }
 
     public function syncCollection(SyncCollectionRequest $request)

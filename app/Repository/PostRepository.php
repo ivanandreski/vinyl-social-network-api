@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Models\Post;
+use App\Models\Comment;
 use App\Models\Enums\SortTypeEnum;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GetPostsRequest;
@@ -32,7 +33,7 @@ class PostRepository implements PostRepositoryInterface
                 break;
         }
 
-        return Post::select('posts.*')
+        $posts = Post::select('posts.*')
             ->selectRaw('COUNT(post_likes.post_id) AS likes')
             ->selectRaw('MAX(CASE WHEN post_likes.user_id = ? THEN 1 ELSE 0 END) AS you_liked', [$user?->id ?? -1])
             ->leftJoin('post_likes', 'posts.id', '=', 'post_likes.post_id')
@@ -43,5 +44,44 @@ class PostRepository implements PostRepositoryInterface
             ->groupBy('posts.id')
             ->orderByDesc($sort, $direction)
             ->paginate(perPage: 100, page: $request->page);
+        foreach($posts as $post) {
+            $post->comments = $this->findCommentsByPost($post);
+        }
+
+        return $posts;
+    }
+
+    public function findCommentsByPost(Post $post)
+    {
+        $comments = Comment::where('post_id', $post->id)
+            ->with('replies')
+            ->with('user')
+            ->whereNull('comment_id')
+            ->get();
+
+        $commentTree = [];
+
+        foreach ($comments as $comment) {
+            $commentTree[] = $this->buildCommentTree($comment);
+        }
+
+        return $commentTree;
+    }
+
+    public function buildCommentTree(Comment $comment)
+    {
+        $tree = [
+            'id' => $comment->id,
+            'body' => $comment->body,
+            'created_at' => $comment->created_at,
+            'user' => $comment->user,
+            'replies' => [],
+        ];
+
+        foreach ($comment->replies as $reply) {
+            $tree['replies'][] = $this->buildCommentTree($reply);
+        }
+
+        return $tree;
     }
 }

@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\UserPlaySessionController;
+use App\Http\Controllers\api\AlbumController;
 use App\Http\Controllers\Api\UserStylusController;
+use App\Http\Controllers\Api\UserPlaySessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,17 +27,25 @@ use App\Http\Controllers\Api\UserStylusController;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
+Route::prefix('user')->group(function() {
+    Route::get('{user}', [UserController::class, 'getProfile']);
+});
+
 Route::prefix('post')->group(function () {
     Route::get('', [PostController::class, 'index']);
     Route::get('{id}', [PostController::class, 'show']);
+    Route::get('/{post}/comment', [PostController::class, 'getComments']);
+});
+
+Route::prefix('album')->group(function() {
+    Route::get('{discogsId}', [AlbumController::class, 'get']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::prefix('user')->group(function () {
-        Route::get('my-profile', [UserController::class, 'getMyProfile']);
-        Route::get('{user}', [UserController::class, 'getProfile']);
+        Route::get('/', [UserController::class, 'getMyProfile']);
         Route::post('sync-collection', [UserController::class, 'syncCollection']);
         Route::get('get-collection', [UserController::class, 'getUserCollection']);
         Route::post('add-friend', [UserController::class, 'addFriend']);
@@ -65,6 +74,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/{post}/like', [PostController::class, 'toggleLike']);
         Route::put('/{post}/edit', [PostController::class, 'edit']);
         Route::delete('/{post}/delete', [PostController::class, 'delete']);
+        Route::post('/{post}/comment/add', [PostController::class, 'addComment']);
     });
 });
 

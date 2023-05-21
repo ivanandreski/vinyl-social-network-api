@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateCommentRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GetPostsRequest;
 use App\Http\Requests\CreatePostRequest;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Models\PostLike;
 use App\Repository\Interface\AlbumCacheRepositoryInterface;
@@ -111,5 +113,22 @@ class PostController extends Controller
 
         $post->delete();
         return response(['message' => 'Success'], Response::HTTP_OK);
+    }
+
+    public function getComments(Post $post) {
+        return $this->postRepository->findCommentsByPost($post);
+    }
+
+    public function addComment(Post $post, CreateCommentRequest $request) {
+        $user = Auth::user();
+
+        $comment = new Comment();
+        $comment->post_id = $post->id;
+        $comment->body = $request->body;
+        $comment->user_id = $user->id;
+        $comment->comment_id = $request->comment_id;
+        $comment->save();
+
+        return $comment;
     }
 }

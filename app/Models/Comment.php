@@ -28,7 +28,7 @@ class Comment extends Model
         'body',
         'post_id',
         'user_id',
-        'parent_id',
+        'comment_id',
     ];
 
     public function post(): BelongsTo
@@ -49,5 +49,10 @@ class Comment extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(CommentLike::class);
+    }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }
