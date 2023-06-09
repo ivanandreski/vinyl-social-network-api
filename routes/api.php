@@ -28,7 +28,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
 Route::prefix('user')->group(function() {
-    Route::get('{user}', [UserController::class, 'getProfile']);
+    Route::get('profile/{user}', [UserController::class, 'getProfile']);
 });
 
 Route::prefix('post')->group(function () {
@@ -45,14 +45,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::prefix('user')->group(function () {
-        Route::get('/', [UserController::class, 'getMyProfile']);
         Route::post('sync-collection', [UserController::class, 'syncCollection']);
         Route::get('get-collection', [UserController::class, 'getUserCollection']);
-        Route::post('add-friend', [UserController::class, 'addFriend']);
-        Route::delete('remove-friend', [UserController::class, 'removeFriend']);
+        Route::post('toggle-follow/{friend}', [UserController::class, 'toggleFollow']);
+        // Route::post('add-friend', [UserController::class, 'addFriend']);
+        // Route::delete('remove-friend', [UserController::class, 'removeFriend']);
         Route::get('search-users', [UserController::class, 'searchUsers']);
         Route::post('change-password', [UserController::class, 'changePassword']);
         Route::post('change-profile-visibility', [UserController::class, 'changeProfileVisibility']);
+        Route::get('/', [UserController::class, 'getMyProfile']);
     });
 
     Route::prefix('user-play-session')->group(function () {

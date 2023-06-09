@@ -33,17 +33,22 @@ class UserController extends Controller
         $this->albumCacheRepository = $albumCacheRepository;
     }
 
-    public function getMyProfile(): User {
+    public function getMyProfile(): User
+    {
         return Auth::user();
     }
 
-    public function getProfile(User $user, Request $request) {
+    public function getProfile(User $user, Request $request)
+    {
         // TODO: put this in a helper method
         $token = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken());
 
         // Get the assigned user
         $requestUser = $token?->tokenable;
         // todo: maybe make some checks for private
+
+        $user->is_follow = UserFriend::where('user_id', '=', $requestUser->id)
+            ->count() > 0;
 
         return $user;
     }
@@ -81,6 +86,22 @@ class UserController extends Controller
         $user = Auth::user();
 
         return $user->albumCaches()->paginate(perPage: 10, page: $request->page);
+    }
+
+    public function toggleFollow(User $friend) {
+        $user = Auth::user();
+        if ($friend->visibility == UserProfileVisibilityEnum::PRIVATE) {
+            return response(['message' => "This person's profile is private"], Response::HTTP_UNAUTHORIZED);
+        }
+        $userFriend = UserFriend::where('user_id', $user->id)->where('friend_id', $friend->id)->first();
+        if($userFriend == null) {
+            $userFriend = new UserFriend();
+            $userFriend->user_id = $user->id;
+            $userFriend->friend_id = $friend->id;
+            $userFriend->save();
+        } else {
+            $userFriend->delete();
+        }
     }
 
     public function addFriend(AddFriendRequest $request)
@@ -122,11 +143,11 @@ class UserController extends Controller
 
     public function searchUsers(SearchUsersRequest $request)
     {
-        return User::select('first_name', 'last_name')
+        return response(['data' => User::select(DB::raw("concat(first_name, ' ', last_name) as name, id"))
             ->where('email', 'like', '%' . $request->name . '%')
             ->orWhere(DB::raw("concat(first_name, ' ', last_name)"), 'like', '%' . $request->name . '%')
             ->limit(10)
-            ->get();
+            ->get()], Response::HTTP_OK);
     }
 
     public function changePassword(ChangePasswordRequest $request)
@@ -154,7 +175,7 @@ class UserController extends Controller
     public function changeEmail(ChangeEmailRequest $request): User
     {
         $user = Auth::user();
-        if($user->email != $request->old_email) {
+        if ($user->email != $request->old_email) {
             return response(['message' => 'This email is wrong'], Response::HTTP_UNAUTHORIZED);
         }
 
