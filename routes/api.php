@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::prefix('user-play-session')->group(function () {
+        Route::get('get-for-album-cache', [UserPlaySessionController::class, 'getForAlbumCache']);
         Route::post('create', [UserPlaySessionController::class, 'create']);
         Route::delete('delete', [UserPlaySessionController::class, 'delete']);
     });
