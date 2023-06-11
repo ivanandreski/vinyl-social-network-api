@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\UserFriend;
 use App\Models\Enums\SortTypeEnum;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GetPostsRequest;
@@ -43,9 +44,14 @@ class PostRepository implements PostRepositoryInterface
             ->with('albumCache')
             ->groupBy('posts.id')
             ->orderByDesc($sort, $direction)
-            ->paginate(perPage: 100, page: $request->page);
-        foreach($posts as $post) {
+            ->paginate(perPage: 1000000, page: $request->page);
+        foreach ($posts as $post) {
             $post->comments = $this->findCommentsByPost($post);
+            if ($user != null) {
+                $post->user->is_follow = UserFriend::where('user_id', '=', $user->id)
+                    ->where('friend_id', $post->user->id)
+                    ->count() > 0;
+            }
         }
 
         return $posts;
