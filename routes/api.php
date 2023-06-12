@@ -104,6 +104,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('user')->group(function () {
         Route::post('sync-collection', [UserController::class, 'syncCollection']);
         Route::get('get-collection', [UserController::class, 'getUserCollection']);
+        Route::get('{user}/get-collection', [AlbumController::class, 'getUserCollection']);
         Route::post('toggle-follow/{friend}', [UserController::class, 'toggleFollow']);
         // Route::post('add-friend', [UserController::class, 'addFriend']);
         // Route::delete('remove-friend', [UserController::class, 'removeFriend']);

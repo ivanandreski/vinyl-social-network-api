@@ -49,6 +49,8 @@ class UserController extends Controller
 
         $user->is_follow = UserFriend::where('user_id', '=', $requestUser->id)
             ->count() > 0;
+        $user->following = UserFriend::where('user_id', $user->id)->count();
+        $user->followers = UserFriend::where('friend_id', $user->id)->count();
 
         return $user;
     }
