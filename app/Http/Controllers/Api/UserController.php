@@ -90,13 +90,14 @@ class UserController extends Controller
         return $user->albumCaches()->paginate(perPage: 10, page: $request->page);
     }
 
-    public function toggleFollow(User $friend) {
+    public function toggleFollow(User $friend)
+    {
         $user = Auth::user();
         if ($friend->visibility == UserProfileVisibilityEnum::PRIVATE) {
             return response(['message' => "This person's profile is private"], Response::HTTP_UNAUTHORIZED);
         }
         $userFriend = UserFriend::where('user_id', $user->id)->where('friend_id', $friend->id)->first();
-        if($userFriend == null) {
+        if ($userFriend == null) {
             $userFriend = new UserFriend();
             $userFriend->user_id = $user->id;
             $userFriend->friend_id = $friend->id;
@@ -197,5 +198,16 @@ class UserController extends Controller
         $user->delete();
 
         return response(['message' => 'User deleted'], Response::HTTP_OK);
+    }
+
+    public function getFollowing()
+    {
+        $user = Auth::user();
+
+        return response(['data' => User::query()
+            ->select('users.*')
+            ->leftJoin('user_friends', 'users.id', '=', 'user_friends.friend_id')
+            ->where('user_friends.user_id', $user->id)
+            ->get()], Response::HTTP_OK);
     }
 }

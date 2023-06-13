@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\api\AlbumController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\UserStylusController;
 use App\Http\Controllers\Api\UserPlaySessionController;
 use App\Models\UserFriend;
@@ -101,6 +102,12 @@ Route::prefix('album')->group(function () {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
+    Route::prefix('chat')->group(function () {
+        Route::post('send/{user}', [ChatController::class, 'sendMessage']);
+        Route::get('messages/{user}', [ChatController::class, 'sendMessage']);
+        Route::get('/', [ChatController::class, 'getUserChats']);
+    });
+
     Route::prefix('user')->group(function () {
         Route::post('sync-collection', [UserController::class, 'syncCollection']);
         Route::get('get-collection', [UserController::class, 'getUserCollection']);
@@ -112,10 +119,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('change-password', [UserController::class, 'changePassword']);
         Route::post('change-profile-visibility', [UserController::class, 'changeProfileVisibility']);
         Route::get('/', [UserController::class, 'getMyProfile']);
+        Route::get('get-following', [UserController::class, 'getFollowing']);
     });
 
     Route::prefix('user-play-session')->group(function () {
-        Route::get('get-for-album-cachephp artisan make:factory AddressFactory', [UserPlaySessionController::class, 'getForAlbumCache']);
+        Route::get('get-for-album-cache', [UserPlaySessionController::class, 'getForAlbumCache']);
         Route::post('create', [UserPlaySessionController::class, 'create']);
         Route::delete('delete', [UserPlaySessionController::class, 'delete']);
     });
