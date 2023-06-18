@@ -66,7 +66,7 @@ class ChatController extends Controller
                 ->get();
         }
 
-        return response($data, Response::HTTP_OK);
+        return response(sizeof($data) == 0 ? '{}' : $data, Response::HTTP_OK);
     }
 
     /**
