@@ -46,10 +46,11 @@ class ChatController extends Controller
         return response(['data' => $data], Response::HTTP_OK);
     }
 
-    public function getUserChats() {
+    public function getUserChats()
+    {
         $requestUser = Auth::user();
         $data = [];
-        foreach($requestUser->friends as $friendJoin) {
+        foreach ($requestUser->friends as $friendJoin) {
             $friend = $friendJoin->friend;
             $senderId = $requestUser->id;
             $receiverId = $friend->id;
@@ -78,14 +79,24 @@ class ChatController extends Controller
     {
         $user = Auth::user();
         $unreadMessages = Message::where('receiver_id', $user->id)
-        ->where('read', '!=', true);
+            ->where('read', '!=', true)
+            ->get();
 
         $data = [];
-        foreach($unreadMessages as $message) {
-            if(!array_key_exists($message->sender_id, $data)) {
-                $data[$message->sender_id] = [];
+        foreach ($unreadMessages as $message) {
+            if (!array_key_exists($message->sender_id, $data)) {
+                $message->read = true;
+                $message->save();
+
+                $message->sender = User::find($message->sender_id)->getFullName();
+                $data[$message->sender_id] = $message;
+            } else if ($data[$message->sender_id]->created_at->lte($message->created_at)) {
+                $message->read = true;
+                $message->save();
+
+                $message->sender = User::find($message->sender_id)->getFullName();
+                $data[$message->sender_id] = $message;
             }
-            $data[$message->sender_id][] = $message;
         }
 
         return response(['data' => $data], Response::HTTP_OK);
