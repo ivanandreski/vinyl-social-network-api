@@ -90,7 +90,7 @@ class PostController extends Controller
             ->where('posts.id', $id)
             ->with('albumCache')
             ->groupBy('posts.id')
-            ->orderBY('posts.created_at', 'desc')
+            ->orderBy('posts.created_at', 'desc')
             ->first();
     }
 
